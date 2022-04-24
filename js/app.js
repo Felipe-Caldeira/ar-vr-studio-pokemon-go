@@ -1,4 +1,3 @@
-
 /*
  Apps are made out of a header (title/controls) and footer
  and some number of columns
