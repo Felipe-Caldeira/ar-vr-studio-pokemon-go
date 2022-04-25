@@ -33,14 +33,15 @@ function iconStyle({color="#000", icon, scale}) {
 	if (color && !(typeof color == "string" && color[0] == "#"))
 		color = colorToHex(color)
 
-	
+	let iconSrc = (icon.slice(0, 5) == 'https') ? icon : `img/icons/${icon}_white_24dp.svg`
+
 	return new ol.style.Style({
 		image: new ol.style.Icon({
 			color: color,
 			anchor: [.5, 1],
 			anchorXUnits: 'fraction',
 			anchorYUnits: 'fraction',
-			src: `img/icons/${icon}_white_24dp.svg`,
+			src: iconSrc,
 			// src: 'icon2.png',
 			scale: scale
 		})

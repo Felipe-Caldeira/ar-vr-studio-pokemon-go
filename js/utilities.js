@@ -66,48 +66,36 @@ function lerpBetween({x, x0, x1, y0, y1, pow=1}) {
 }
 
 // Colors
-function colorToRGB(v) {
-	// https://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
-	
-	let h = v[0]
-	let s = v[1]
-	let l = v[2]
-	var r, g, b;
+function colorToRGB(c) {
+    c = {h: c[0], s: c[1], v: c[2]};
+    const X = c.v * c.s;
+    const Y = X * (1 - Math.abs(((c.h/60) % 2) - 1));
+    const M = c.v - X;
 
-	if(s == 0){
-		r = g = b = l; // achromatic
-	} else {
-		var hue2rgb = function hue2rgb(p, q, t){
-			if(t < 0) t += 1;
-			if(t > 1) t -= 1;
-			if(t < 1/6) return p + (q - p) * 6 * t;
-			if(t < 1/2) return q;
-			if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-			return p;
-		}
-
-		var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		var p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1/3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1/3);
-	}
-
-	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-
+    const [R, G, B] = (c.h >= 0 && c.h < 60) ? [X, Y, 0] :
+                      (c.h >= 60 && c.h < 120) ? [Y, X, 0] :
+                      (c.h >= 120 && c.h < 180) ? [0, X, Y] :
+                      (c.h >= 180 && c.h < 240) ? [0, Y, X] :
+                      (c.h >= 240 && c.h < 300) ? [Y, 0, X] :
+                      [X, 0, Y];
+    
+    return [R, G, B].map(val => Math.round((val + M)*255));
 }
 
-function colorToHex(v) {
-	let rgb = colorToRGB(v)
-	function componentToHex(c) {
-		var hex = c.toString(16);
-		return hex.length == 1 ? "0" + hex : hex;
-	}
-
-	return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+function intToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
 }
 
-	
+function RGBtoHEX(c) {
+    return "#" + intToHex(c[0]) + intToHex(c[1]) + intToHex(c[2]);
+}
+
+function colorToHex(c) {
+	let rgb = colorToRGB(c)
+	return RGBtoHEX(rgb)
+}
+
 
 
 function distanceBetween(v0, v1) {
